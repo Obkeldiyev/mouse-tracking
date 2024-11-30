@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mouse Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f4f4f4;
+        }
+        .info {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="info">
+        <h1>Mouse Tracker</h1>
+        <p>Mouse Position: <span id="mouse-position">(0, 0)</span></p>
+        <p>Time Spent: <span id="time-spent">0</span> seconds</p>
+    </div>
+    <script>
+        const mousePositionElement = document.getElementById('mouse-position');
+        const timeSpentElement = document.getElementById('time-spent');
+
+        let timeSpent = 0;
+
+        // Update time spent every second
+        setInterval(() => {
+            timeSpent++;
+            timeSpentElement.textContent = timeSpent;
+        }, 1000);
+
+        // Track mouse position
+        document.addEventListener('mousemove', (event) => {
+            const { clientX, clientY } = event;
+            mousePositionElement.textContent = `(${clientX}, ${clientY})`;
+        });
+
+        // Take a screenshot every 10 minutes
+        setInterval(async () => {
+            const response = await fetch('/screenshot');
+            const result = await response.json();
+            console.log(result.message, result.path);
+        }, 600000); // 10 minutes in milliseconds
+    </script>
+</body>
+</html>
