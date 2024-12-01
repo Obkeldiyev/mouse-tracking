@@ -1,24 +1,31 @@
 const express = require('express');
-const puppeteer = require('puppeteer');
+const screenshot = require('screenshot-desktop');
 const path = require('path');
+const fs = require('fs');
+
 const app = express();
 const port = 3000;
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// API to take a screenshot
-app.get('/screenshot', async (req, res) => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto(`http://localhost:${port}`, { waitUntil: 'networkidle2' });
-    const timestamp = Date.now();
-    const screenshotPath = `screenshots/screenshot-${timestamp}.png`;
+// Create a folder for storing screenshots if it doesn't exist
+const screenshotDir = path.join(__dirname, 'screenshots');
+if (!fs.existsSync(screenshotDir)) {
+    fs.mkdirSync(screenshotDir);
+}
 
-    await page.screenshot({ path: screenshotPath });
-    await browser.close();
-
-    res.json({ message: 'Screenshot taken', path: screenshotPath });
+// API to take a full-screen screenshot
+app.get('/take-screenshot', async (req, res) => {
+    try {
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const screenshotPath = path.join(screenshotDir, `screenshot-${timestamp}.png`);
+        await screenshot({ filename: screenshotPath });
+        res.json({ message: 'Screenshot taken', path: screenshotPath });
+    } catch (error) {
+        console.error('Error taking screenshot:', error);
+        res.status(500).json({ message: 'Failed to take screenshot', error: error.message });
+    }
 });
 
 // Start the server

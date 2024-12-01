@@ -46,10 +46,14 @@
 
         // Take a screenshot every 10 minutes
         setInterval(async () => {
-            const response = await fetch('/screenshot');
-            const result = await response.json();
-            console.log(result.message, result.path);
-        }, 600000); // 10 minutes in milliseconds
+            try {
+                const response = await fetch('/take-screenshot');
+                const result = await response.json();
+                console.log(result.message, result.path);
+            } catch (error) {
+                console.error('Failed to take screenshot:', error);
+            }
+        }, 6000); // 10 minutes in milliseconds
     </script>
 </body>
 </html>
