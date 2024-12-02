@@ -3,57 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mouse Tracker</title>
+    <title>Main Page</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
             background: #f4f4f4;
         }
         .info {
             text-align: center;
         }
+        .link {
+            margin-top: 20px;
+        }
+        a {
+            text-decoration: none;
+            color: blue;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="info">
-        <h1>Mouse Tracker</h1>
+        <h1>Activity Tracker</h1>
         <p>Mouse Position: <span id="mouse-position">(0, 0)</span></p>
+        <p>Keyboard Activity: <span id="keyboard-activity">None</span></p>
+        <p>World Time: <span id="world-time"></span></p>
         <p>Time Spent: <span id="time-spent">0</span> seconds</p>
     </div>
+    <div class="link">
+        <a href="/gallery.html">Go to Gallery</a>
+    </div>
     <script>
+        // Frontend logic for mouse, keyboard tracking, and world time
         const mousePositionElement = document.getElementById('mouse-position');
+        const keyboardActivityElement = document.getElementById('keyboard-activity');
+        const worldTimeElement = document.getElementById('world-time');
         const timeSpentElement = document.getElementById('time-spent');
 
         let timeSpent = 0;
 
-        // Update time spent every second
         setInterval(() => {
             timeSpent++;
             timeSpentElement.textContent = timeSpent;
         }, 1000);
 
-        // Track mouse position
         document.addEventListener('mousemove', (event) => {
             const { clientX, clientY } = event;
             mousePositionElement.textContent = `(${clientX}, ${clientY})`;
         });
 
-        // Take a screenshot every 10 minutes
-        setInterval(async () => {
-            try {
-                const response = await fetch('/take-screenshot');
-                const result = await response.json();
-                console.log(result.message, result.path);
-            } catch (error) {
-                console.error('Failed to take screenshot:', error);
-            }
-        }, 6000); // 10 minutes in milliseconds
+        document.addEventListener('keydown', (event) => {
+            keyboardActivityElement.textContent = `Key Pressed: ${event.key}`;
+        });
+
+        setInterval(() => {
+            const now = new Date();
+            worldTimeElement.textContent = now.toLocaleTimeString();
+        }, 1000);
     </script>
 </body>
 </html>

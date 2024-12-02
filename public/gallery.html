@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .gallery img {
+            width: 200px;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        a {
+            text-decoration: none;
+            color: blue;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Screenshot Gallery</h1>
+    <div class="gallery" id="gallery"></div>
+    <div class="link">
+        <a href="/index.html">Go to Main Page</a>
+    </div>
+    <script>
+        async function loadGallery() {
+            try {
+                const response = await fetch('/screenshots');
+                const screenshots = await response.json();
+                const gallery = document.getElementById('gallery');
+                gallery.innerHTML = '';
+                screenshots.forEach(screenshot => {
+                    const img = document.createElement('img');
+                    img.src = screenshot;
+                    gallery.appendChild(img);
+                });
+            } catch (error) {
+                console.error('Failed to load screenshots:', error);
+            }
+        }
+
+        // Load gallery on page load
+        loadGallery();
+    </script>
+</body>
+</html>
